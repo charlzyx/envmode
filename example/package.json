@@ -1,0 +1,14 @@
+{
+  "name": "envmode-test",
+  "license": "MIT",
+  "scripts": {
+    "testall": "npm run badcross && npm run okcross && npm run test1 && npm run test2 && npm run test3",
+    "badcross": "ENVMODE=1 envmode node test.js && node test2.js",
+    "okcross": "ENVMODE=1 envmode npm run mulcli",
+    "mulcli": "node test.js && node test2.js",
+    "test1": "ENVMODE=1 envmode node test.js",
+    "test2": "envmode --env.mode=2 node test.js",
+    "test3": "ENVMODE=1 envmode --env.mode=2 node test.js"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,34 @@
+{
+  "name": "envmode",
+  "version": "1.0.0",
+  "author": "charlzyx@qq.com",
+  "keywords": ["cli", "node", "tool", "env", "dotenv", "envExpand", "envmode"],
+  "description": "cli tools to load dotenv with expand by ENVMODE | --env.mode.",
+  "homepage": "http://github.com/charlzyx/envmode",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charlzyx/envmode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/charlzyx/envmode/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "src/cli.ts",
+  "bin": {
+    "envmode": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsup src/cli.ts"
+  },
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "dotenv-expand": "^5.1.0",
+    "minimist": "^1.2.5"
+  },
+  "devDependencies": {
+    "tsup": "^4.10.1"
+  }
+}
