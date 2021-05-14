@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 
 export const BANNER = '// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore';
+export const BASH_BANNER = '# 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore';
 
 /**
  * @param RAW_ARGS 命令行 --env.[xxxx] 参数, 先不支持
