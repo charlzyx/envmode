@@ -17,7 +17,11 @@ ${keys}
 }
 ${BANNER}
   `.trim();
-  fs.writeFileSync(ouputPath, dtsfile);
+  try {
+    fs.writeFileSync(ouputPath, dtsfile);
+  } catch (error) {
+    console.log('[envmode] gen err: ', error);
+  }
 };
 
 export const genEnvTsFile = (envFilePath: string, ouputPath: string) => {
@@ -29,7 +33,11 @@ export default ENV;
 export { ENV }
 ${BANNER}
   `.trim();
-  fs.writeFileSync(ouputPath, str);
+  try {
+    fs.writeFileSync(ouputPath, str);
+  } catch (error) {
+    console.log('[envmode] gen err: ', error);
+  }
 };
 
 export const genEnvJsFile = (envFilePath: string, ouputPath: string) => {
@@ -39,7 +47,11 @@ ${BANNER}
 module.exports = ${JSON.stringify(json, null, 2)};
 ${BANNER}
 `.trim();
-  fs.writeFileSync(ouputPath, str);
+  try {
+    fs.writeFileSync(ouputPath, str);
+  } catch (error) {
+    console.log('[envmode] gen err: ', error);
+  }
 };
 
 export const genEnvDefinesFile = (envFilePath: string, ouputPath: string) => {
@@ -49,7 +61,11 @@ ${BANNER}
 module.exports = ${JSON.stringify(defines, null, 2)};
 ${BANNER}
 `.trim();
-  fs.writeFileSync(ouputPath, str);
+  try {
+    fs.writeFileSync(ouputPath, str);
+  } catch (error) {
+    console.log('[envmode] gen err: ', error);
+  }
 };
 
 
