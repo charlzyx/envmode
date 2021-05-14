@@ -1,4 +1,3 @@
-import { BASH_BANNER } from './config'
 const getKeysInDotEnv = (envStr: string) => {
   return envStr
     .split('\n')
@@ -24,9 +23,7 @@ export const mergeEnv = (env: string, coverEnv: string) => {
   });
 
   return `
-${BASH_BANNER}
 ${finalEnv}
 ${coverEnv}
-${BASH_BANNER}
 `.trim();
 };
