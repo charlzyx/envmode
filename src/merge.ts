@@ -1,3 +1,4 @@
+import { BANNER } from './config'
 const getKeysInDotEnv = (envStr) => {
   return envStr
     .split('\n')
@@ -23,9 +24,9 @@ export const mergeEnv = (env, coverEnv) => {
   });
 
   return `
-# 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore!
+${BANNER}
 ${finalEnv}
 ${coverEnv}
-# 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore!
+${BANNER}
 `.trim();
 };

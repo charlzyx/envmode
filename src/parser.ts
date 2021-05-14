@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { BANNER } from './config'
 
 export const toEnvDefines = (json: Object) =>
   Object.keys(json).reduce((o, key) => {
@@ -17,10 +18,11 @@ export const parseDotEnv = (envFilePath: string) => {
 
 
 export const JsonToDotEnv = (json: Record<string, string>) => {
+  console.log("json", json);
   const keys = Object.keys(json);
   return `
-# 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore!
-${keys.map(key => `${key}=${json[key]}\n`)}
-# 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore!
+${BANNER}
+${keys.map(key => `${key}=${json[key]}`).join('\n')}
+${BANNER}
   `.trim();
 }

@@ -11,7 +11,7 @@ import { JsonToDotEnv } from './parser'
 
 
 const writeFileAsync = (filepath: string, content: string) => {
-  fs.writeFileSync(filepath, content, { encoding: 'utf-8'});
+  fs.writeFileSync(filepath, content, { encoding: 'utf-8' });
 }
 
 const argv = process.argv.splice(2);
@@ -55,9 +55,9 @@ const myEnv = dotenv.config({ path: DOTENV_OUTPUT });
 /** 这里其实已经注入过了 */
 const { parsed: expandEnv } = dotenvExpand(myEnv);
 
-genrator(DOTENV_OUTPUT, config.genConfig);
-
 writeFileAsync(DOTENV_OUTPUT, JsonToDotEnv(expandEnv));
+
+genrator(DOTENV_OUTPUT, config.genConfig);
 
 console.log('[envmode]-------------注入灵魂---------------')
 console.log(expandEnv);

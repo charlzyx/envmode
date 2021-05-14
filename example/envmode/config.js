@@ -15,8 +15,8 @@ const cwd = (file) => path.resolve(process.cwd(), file);
 module.exports = {
   genConfig: {
     genEnvJsFilePaths: cwd('./env.js'),
-    genEnvDefinesFilePaths: cwd('./defines.js'),
-    genEnvTsFilePaths: [cwd('./web/ENV.ts'), cwd('./src/ENV.ts')],
-    genProcessTypeDefinesPaths: cwd('./typings/process.d.ts'),
+    // genEnvDefinesFilePaths: cwd('./defines.js'),
+    // genEnvTsFilePaths: [cwd('./web/ENV.ts'), cwd('./src/ENV.ts')],
+    // genProcessTypeDefinesPaths: cwd('./typings/process.d.ts'),
   },
 };

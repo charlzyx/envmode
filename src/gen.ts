@@ -1,20 +1,21 @@
 import fs from 'fs';
-import { parseDotEnv }  from './parser';
+import { parseDotEnv } from './parser';
+import { BANNER } from './config'
 
 export const genProcessTypeDefines = (envFilePath: string, ouputPath: string) => {
   const json = parseDotEnv(envFilePath).json;
   const keys = Object.keys(json).reduce((s, key) => {
-    s = `${s}${key}: string; \n`;
+    s = `    ${s}${key}: string; \n`;
     return s;
   }, '');
   const dtsfile = `
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 declare namespace NodeJS {
   export interface ProcessEnv {
 ${keys}
   }
 }
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
   `.trim();
   fs.writeFileSync(ouputPath, dtsfile);
 };
@@ -22,11 +23,11 @@ ${keys}
 export const genEnvTsFile = (envFilePath: string, ouputPath: string) => {
   const json = parseDotEnv(envFilePath).json;
   const str = `
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 const ENV = ${JSON.stringify(json, null, 2)};
 export default ENV;
 export { ENV }
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
   `.trim();
   fs.writeFileSync(ouputPath, str);
 };
@@ -34,9 +35,9 @@ export { ENV }
 export const genEnvJsFile = (envFilePath: string, ouputPath: string) => {
   const json = parseDotEnv(envFilePath).json;
   const str = `
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 module.exports = ${JSON.stringify(json, null, 2)};
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 `.trim();
   fs.writeFileSync(ouputPath, str);
 };
@@ -44,9 +45,9 @@ module.exports = ${JSON.stringify(json, null, 2)};
 export const genEnvDefinesFile = (envFilePath: string, ouputPath: string) => {
   const defines = parseDotEnv(envFilePath).defines;
   const str = `
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 module.exports = ${JSON.stringify(defines, null, 2)};
-// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore
+${BANNER}
 `.trim();
   fs.writeFileSync(ouputPath, str);
 };

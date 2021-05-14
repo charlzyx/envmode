@@ -1,8 +1,10 @@
 import path from 'path';
 import fs from 'fs';
 
+export const BANNER = '// 这是 envmode 生成的文件, 不要手动修改!!, 建议添加到 .gitignore';
+
 /**
- * @param RAW_ARGS 命令行 --envmode[xxxx] 参数, 先不支持
+ * @param RAW_ARGS 命令行 --env.[xxxx] 参数, 先不支持
  */
 export const getConfig = (RAW_ARGS?: string[]) => {
   const dir = path.resolve(process.cwd(), './envmode');
@@ -15,9 +17,9 @@ export const getConfig = (RAW_ARGS?: string[]) => {
   }
 }
 
-export const getEnvmodeReader = (dir: string) =>  (mode: string) => {
+export const getEnvmodeReader = (dir: string) => (mode: string) => {
   const filepath = path.resolve(dir, '.env.' + mode);
-  if (filepath) {
+  if (mode) {
     try {
       return fs.readFileSync(filepath, { encoding: 'utf-8' });
     } catch (error) {
@@ -25,10 +27,11 @@ export const getEnvmodeReader = (dir: string) =>  (mode: string) => {
         return '';
       }
       console.error(error);
-      console.error('envmode error when read file from: ' + filepath)
+      console.error('[envmode] error when read file from: ' + filepath)
       process.exit(-1);
     }
   } else {
-    return '';
+    console.error(`[envmode] .env.{mode} ${filepath} not found, please add.`)
+    process.exit(-1);
   }
 }
