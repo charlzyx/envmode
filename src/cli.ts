@@ -26,6 +26,7 @@ const ENVMODE_RAW_ARGS = argv.filter(x => ENVMODE_PATTERN.test(x));
 
 
 const ENVMODE = process.env.ENVMODE || envmodeArg.mode || '';
+console.log("最终生效 ENVMODE=", ENVMODE);
 
 /** 后面要执行的命令 */
 const OTHER_RAW_ARGS = argv.filter(x => !ENVMODE_PATTERN.test(x));

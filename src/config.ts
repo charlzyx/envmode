@@ -20,6 +20,7 @@ export const getConfig = (RAW_ARGS?: string[]) => {
 
 export const getEnvmodeReader = (dir: string) => (mode: string) => {
   const filepath = path.resolve(dir, '.env.' + mode);
+  const defaultpath = path.resolve(dir, '.env.default');
   if (mode) {
     try {
       return fs.readFileSync(filepath, { encoding: 'utf-8' });
@@ -27,12 +28,9 @@ export const getEnvmodeReader = (dir: string) => (mode: string) => {
       if (mode === 'default') {
         return '';
       }
-      console.error(error);
-      console.error('[envmode] error when read file from: ' + filepath)
-      process.exit(-1);
+      console.warn('[envmode] 没有找到配置文件: ' + filepath + ' 将使用默认值 ' + defaultpath )
     }
   } else {
-    console.error(`[envmode] .env.{mode} ${filepath} not found, please add.`)
-    process.exit(-1);
+    console.warn('[envmode] 没有指定 ENVMODE, 将使用默认值 ' + defaultpath)
   }
 }

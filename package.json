@@ -1,6 +1,6 @@
 {
   "name": "envmode",
-  "version": "1.2.9",
+  "version": "2.0.0",
   "author": "charlzyx@qq.com",
   "keywords": ["cli", "node", "tool", "env", "dotenv", "envExpand", "envmode"],
   "description": "cli tools to load dotenv with expand by ENVMODE | --env.mode.",

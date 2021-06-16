@@ -18,7 +18,7 @@ export const parseDotEnv = (envFilePath: string) => {
 
 
 export const JsonToDotEnv = (json: Record<string, string>) => {
-  console.log("json", json);
+  // console.log("json", json);
   const keys = Object.keys(json);
   return `
 ${BASH_BANNER}
