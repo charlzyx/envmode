@@ -1,75 +1,93 @@
 #!/usr/bin/env node
 import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
+// import dotenvExpand from 'dotenv-expand';
 import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
-import { getConfig, getEnvmodeReader } from './config';
+import { TOptions, getConfig, getEnvmodeReader } from './config';
 import { mergeEnv } from './merge';
 import { genrator } from './gen';
-import { JsonToDotEnv } from './parser'
-
-
+import { JsonToDotEnv } from './parser';
+import dotenvExpand from './expand';
+/**
+ * HELPER
+ */
 const writeFileAsync = (filepath: string, content: string) => {
   fs.writeFileSync(filepath, content, { encoding: 'utf-8' });
-}
+};
+
+const keyInProcessEnv = (x: string) => `ENVMODE_${x.toUpperCase()}`;
+
+const mergeWithProcess = (opts: Record<string, string>) => {
+  /** 大多参数支持 ENVMODE_XXX  前缀来覆盖 --env.xxx 使用的配置 */
+  const merged = Object.keys(opts).reduce((obj, key) => {
+    const valInEnv = process.env[keyInProcessEnv(key)];
+    obj[key] = valInEnv !== undefined ? valInEnv : opts[key];
+    return obj;
+  }, {} as TOptions);
+  /** 只有 ENVMODE 最为常用, 直接简化为 ENVMODE, 并做覆盖 */
+  merged.mode =
+    process.env.ENVMODE !== undefined ? process.env.ENVMODE : opts.mode;
+  return merged;
+};
+
+/**
+ * CONFIG
+ * 目前支持 ENVMODE=[mode], --env.mode=[mode], --env.dir=[envmode]
+ */
+const REG = {
+  IS_ENV_ARG: /--env\./,
+};
+
+/**
+ * 解析参数
+ */
 
 const argv = process.argv.splice(2);
-const ENVMODE_PATTERN = /--env\./
-
 const parserArgv = require('minimist')(argv);
+const opts: TOptions = mergeWithProcess(parserArgv.env);
+// 剩下的认为是用户命令
+const cliargv = argv.filter((x) => !REG.IS_ENV_ARG.test(x));
 
-const envmodeArg = parserArgv.env || {};
-
-/** 保留给自己用的一些配置 */
-const ENVMODE_RAW_ARGS = argv.filter(x => ENVMODE_PATTERN.test(x));
-
-
-const ENVMODE = process.env.ENVMODE || envmodeArg.mode || '';
-console.log("最终生效 ENVMODE=", ENVMODE);
-
-/** 后面要执行的命令 */
-const OTHER_RAW_ARGS = argv.filter(x => !ENVMODE_PATTERN.test(x));
-
-/** 获取配置 */
-const config = getConfig(ENVMODE_RAW_ARGS);
-
-const DOTENV_OUTPUT = path.resolve(config.envmodeDir, './.env');
-/** 读取 default */
-
-const envmodeReader = getEnvmodeReader(config.envmodeDir);
-
-const defaultENV = envmodeReader('default');
-
-const modeENV = envmodeReader(ENVMODE);
-
-const mergedENV = mergeEnv(defaultENV, modeENV);
+/**
+ * 获取配置
+ */
+const config = getConfig(opts);
+const envmodeReader = getEnvmodeReader(config.dir);
+const defaultEnv = envmodeReader('default');
+const modeEnv = envmodeReader(opts.mode);
+const mergedEnv = mergeEnv(defaultEnv, modeEnv);
 
 /**
  * 第一次写入是为了给下面 dotenv 读取用
  *主要是 dotenv.parse 出来的对象不能直接给 dotenvExpand 用
  */
-writeFileAsync(DOTENV_OUTPUT, mergedENV);
+writeFileAsync(config.tmpDotEnv, mergedEnv);
 
-const myEnv = dotenv.config({ path: DOTENV_OUTPUT });
+const parsedEnv = dotenv.config({ path: config.tmpDotEnv });
 
-/** 这里其实已经注入过了 */
-const { parsed: expandEnv } = dotenvExpand(myEnv);
+// /** 这里其实已经注入进入 process.env 了 */
+const { parsed: expandEnv } = dotenvExpand(parsedEnv);
 
-writeFileAsync(DOTENV_OUTPUT, JsonToDotEnv(expandEnv));
+/**
+ * expand 之后再次写入, 给生成用
+ */
+writeFileAsync(config.tmpDotEnv, JsonToDotEnv(expandEnv));
 
-genrator(DOTENV_OUTPUT, config.genConfig);
+genrator(config.tmpDotEnv, config.conf.genConfig);
 
-console.log('[envmode]-------------注入灵魂---------------')
-console.log(expandEnv);
-console.log('[envmode]----------灵魂注入完毕---------------')
+if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.ENVMODE_DEBUG !== undefined
+) {
+  console.log(
+    '[envmode]-------------最终注入 process.env 环境变量---------------',
+  );
+  console.log(expandEnv);
+}
 
 /** 注入灵魂, 并跑剩下的命令 */
-spawn(OTHER_RAW_ARGS.join(' '), {
+spawn(cliargv.join(' '), {
   shell: true,
   stdio: 'inherit',
-  env: {
-    ...process.env,
-    // ...expandEnv,
-  }
-})
+});

@@ -2,9 +2,19 @@
   "name": "envmode",
   "version": "2.0.0",
   "author": "charlzyx@qq.com",
-  "keywords": ["cli", "node", "tool", "env", "dotenv", "envExpand", "envmode"],
-  "description": "cli tools to load dotenv with expand by ENVMODE | --env.mode.",
+  "keywords": [
+    "cli",
+    "node",
+    "tool",
+    "env",
+    "dotenv",
+    "envmode"
+  ],
+  "description": "load multpile dotenv files with expand by ENVMODE | --env.mode.",
   "homepage": "http://github.com/charlzyx/envmode",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/charlzyx/envmode.git"
@@ -14,7 +24,8 @@
   },
   "license": "MIT",
   "files": [
-    "dist", "src"
+    "dist",
+    "src"
   ],
   "main": "src/cli.ts",
   "bin": {
@@ -25,7 +36,6 @@
   },
   "dependencies": {
     "dotenv": "^9.0.2",
-    "dotenv-expand": "^5.1.0",
     "minimist": "^1.2.5"
   },
   "devDependencies": {

@@ -6,7 +6,17 @@ const getKeysInDotEnv = (envStr: string) => {
     .filter((x) => !!x);
 };
 
+/**
+ * 将下面这种表达式中的值替换为 process.env 里面的对应值, 没有则为 ''
+ * VAR=${VAR}
+ * dotenvExpand  在解析的时候会报递归解析错误, 所以对这种同名的
+ *
+ */
+
 export const mergeEnv = (env: string, coverEnv: string) => {
+  if (env === coverEnv) {
+    return env;
+  }
   // 默认 env 的 keys
   const envKeys = getKeysInDotEnv(env);
   // 要覆盖的 env 里面的 keys

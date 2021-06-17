@@ -1,8 +1,11 @@
 import fs from 'fs';
 import { parseDotEnv } from './parser';
-import { BANNER } from './config'
+import { BANNER, TConfig } from './config';
 
-export const genProcessTypeDefines = (envFilePath: string, ouputPath: string) => {
+export const genProcessTypeDefines = (
+  envFilePath: string,
+  ouputPath: string,
+) => {
   const json = parseDotEnv(envFilePath).json;
   const keys = Object.keys(json).reduce((s, key) => {
     s = `    ${s}${key}: string; \n`;
@@ -68,32 +71,36 @@ ${BANNER}
   }
 };
 
-
 const runEach = <T>(maybe: T | T[], runner: (x: T) => void) => {
   if (Array.isArray(maybe)) {
-    maybe.forEach(x => runner(x));
+    maybe.forEach((x) => runner(x));
   } else {
-    runner(maybe)
+    runner(maybe);
   }
-}
+};
 
-export const genrator = (envFilePath: string, genConfig: {
-  genEnvJsFilePaths: string | string[]
-  genEnvTsFilePaths: string | string[]
-  genEnvDefinesFilePaths: string | string[]
-  genProcessTypeDefinesPaths: string | string[]
-}) => {
+export const genrator = (
+  envFilePath: string,
+  genConfig: TConfig['genConfig'],
+) => {
   if (genConfig.genEnvJsFilePaths) {
-    runEach(genConfig.genEnvJsFilePaths, (item) => genEnvJsFile(envFilePath, item))
+    runEach(genConfig.genEnvJsFilePaths, (item) =>
+      genEnvJsFile(envFilePath, item),
+    );
   }
   if (genConfig.genEnvTsFilePaths) {
-    runEach(genConfig.genEnvTsFilePaths, (item) => genEnvTsFile(envFilePath, item))
+    runEach(genConfig.genEnvTsFilePaths, (item) =>
+      genEnvTsFile(envFilePath, item),
+    );
   }
   if (genConfig.genEnvDefinesFilePaths) {
-    runEach(genConfig.genEnvDefinesFilePaths, (item) => genEnvDefinesFile(envFilePath, item))
+    runEach(genConfig.genEnvDefinesFilePaths, (item) =>
+      genEnvDefinesFile(envFilePath, item),
+    );
   }
   if (genConfig.genProcessTypeDefinesPaths) {
-    runEach(genConfig.genProcessTypeDefinesPaths, (item) => genProcessTypeDefines(envFilePath, item))
+    runEach(genConfig.genProcessTypeDefinesPaths, (item) =>
+      genProcessTypeDefines(envFilePath, item),
+    );
   }
-
-}
+};

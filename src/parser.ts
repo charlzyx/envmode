@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { BASH_BANNER } from './config'
+import { BASH_BANNER } from './config';
 
 export const toEnvDefines = (json: Object) =>
   Object.keys(json).reduce((o, key) => {
@@ -16,13 +16,12 @@ export const parseDotEnv = (envFilePath: string) => {
   return { defines: toEnvDefines(json), json: json };
 };
 
-
 export const JsonToDotEnv = (json: Record<string, string>) => {
   // console.log("json", json);
   const keys = Object.keys(json);
   return `
 ${BASH_BANNER}
-${keys.map(key => `${key}=${json[key]}`).join('\n')}
+${keys.map((key) => `${key}=${json[key]}`).join('\n')}
 ${BASH_BANNER}
   `.trim();
-}
+};

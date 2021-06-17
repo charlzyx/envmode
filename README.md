@@ -12,8 +12,6 @@ cli tools to load dotenv with expand by ENVMODE | --env.mode.
 │   ├── .env
 │   ├── .env.1
 │   ├── .env.2
-│   ├── .env.3
-│   ├── .env.default
 │   └── config.js
 ├── package.json
 ├── test.js
@@ -49,7 +47,7 @@ yarn add envmode
 ```js
 // envmode/config.js
 /**
- config: {
+type TConfig = {
     genConfig: {
       genEnvJsFilePaths?: string | string[]
       genEnvTsFilePaths?: string | string[]
@@ -72,15 +70,42 @@ module.exports = {
 };
 ```
 
+## expand 规则
+```bash
+# 在 process.env 中已经存在的值,
+# 会被替换为 process.env.VAR_EXIST_IN_PROCESS_ENV 的值
+# 相当于copy了一下 process.env 的值
+# 多用于生成 ENV.ts 使用
+VAR_EXIST_IN_PROCESS_ENV=${VAR_EXIST_IN_PROCESS_ENV}
+VAR_EXIST_IN_PROCESS_ENV=$VAR_EXIST_IN_PROCESS_ENV
+# 在 process.env 中不存在!!!的值
+# 会被替换为 '', 这是跟 dotenv-expand 区别的地方
+# 在 dotenv-expand 中, 会 递归 maxsize error
+VAR_NOT_EXIST_IN_PROCESS_ENV=${VAR_NOT_EXIST_IN_PROCESS_ENV}
+VAR_NOT_EXIST_IN_PROCESS_ENV=$VAR_NOT_EXIST_IN_PROCESS_ENV
+```
+
 ## 规则
 
-- 如果存在 .env.default 那么会进行 merge, 最终结果为 .env.default + .env.{mode}, merge 逻辑为同名覆盖
-
+- .env 为默认变量表
+- 指定 --env.mode=[mode] 之后如果存在 .env.[mode] 那么会进行 merge, 最终结果为 .env + .env.{mode}, merge 逻辑为同名覆盖
 - 优先级 ENVMODE > --env.mode
-
 - 后面如果有 *&&* | *&* 连接的命令, 参考上面 `okcross` 使用 npm 进行一次包装, thanks to [@JserWang](https://github.com/JserWang)
+
+## debug
+```js
+if (
+  process.env.NODE_ENV === 'development' ||
+  process.env.ENVMODE_DEBUG !== undefined
+) {
+  console.log(
+    '[envmode]-------------最终注入 process.env 环境变量---------------',
+  );
+  console.log(expandEnv);
+}
+```
 
 
 ## inspired
 
-by [vite](https://vitejs.dev/) and [motdotla/dotenv](https://github.com/motdotla/dotenv)
+by [vite](https://vitejs.dev/) and powered by [motdotla/dotenv](https://github.com/motdotla/dotenv)
