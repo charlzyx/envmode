@@ -18,7 +18,7 @@ const writeFileAsync = (filepath: string, content: string) => {
 
 const keyInProcessEnv = (x: string) => `ENVMODE_${x.toUpperCase()}`;
 
-const mergeWithProcess = (opts: Record<string, string>) => {
+const mergeWithProcess = (opts: Record<string, string> = {}) => {
   /** 大多参数支持 ENVMODE_XXX  前缀来覆盖 --env.xxx 使用的配置 */
   const merged = Object.keys(opts).reduce((obj, key) => {
     const valInEnv = process.env[keyInProcessEnv(key)];
