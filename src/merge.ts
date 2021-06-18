@@ -1,4 +1,4 @@
-const getKeysInDotEnv = (envStr: string) => {
+const getKeysInDotEnv = (envStr: string = '') => {
   return envStr
     .split('\n')
     .filter((x) => !/^#/.test(x))
